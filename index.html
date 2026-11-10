@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crossout Boost Kit — Aimbot, ESP &amp; Farm Bot for Crossout PC</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-deep: #070b18;
+    --bg-mid: #0e1430;
+    --bg-soft: #141b3d;
+    --accent: #6c5ce7;
+    --accent-2: #00d4ff;
+    --accent-3: #ff4d6d;
+    --text: #e8ecf8;
+    --muted: #9aa3c0;
+    --card: rgba(255, 255, 255, 0.045);
+    --card-border: rgba(255, 255, 255, 0.09);
+    --glass: rgba(14, 20, 48, 0.65);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    background:
+      radial-gradient(1100px 600px at 15% -10%, rgba(108, 92, 231, 0.28), transparent 60%),
+      radial-gradient(900px 550px at 90% 0%, rgba(0, 212, 255, 0.16), transparent 55%),
+      radial-gradient(1000px 700px at 50% 110%, rgba(255, 77, 109, 0.10), transparent 60%),
+      linear-gradient(160deg, #070b18 0%, #0c1230 45%, #10173a 100%);
+    background-attachment: fixed;
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  .wrap { width: 100%; max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---------- NAV ---------- */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--glass);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    backdrop-filter: blur(18px) saturate(160%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  }
+  .nav-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 68px; gap: 20px;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 800; font-size: 1.02rem; letter-spacing: -0.02em;
+    color: #fff; text-decoration: none; white-space: nowrap;
+  }
+  .brand-mark {
+    width: 30px; height: 30px; flex: 0 0 30px; border-radius: 9px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    display: grid; place-items: center; font-size: 0.95rem;
+    box-shadow: 0 6px 18px rgba(108, 92, 231, 0.45);
+  }
+  .brand span { color: var(--accent-2); }
+  .nav-links { display: flex; align-items: center; gap: 28px; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none; font-size: 0.9rem; font-weight: 500;
+    transition: color 0.18s ease;
+  }
+  .nav-links a:hover { color: #fff; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+    font-family: inherit; font-weight: 700; font-size: 0.92rem;
+    border-radius: 12px; padding: 12px 22px; text-decoration: none;
+    cursor: pointer; border: 1px solid transparent;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+    white-space: nowrap;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, #7c6cf5, #4b8bff 55%, #00d4ff);
+    color: #05091a;
+    box-shadow: 0 10px 28px rgba(80, 130, 255, 0.35);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 16px 38px rgba(80, 130, 255, 0.5); }
+  .btn-ghost {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.16);
+    color: var(--text);
+  }
+  .btn-ghost:hover { background: rgba(255, 255, 255, 0.09); border-color: rgba(255, 255, 255, 0.3); transform: translateY(-2px); }
+  .btn-sm { padding: 9px 16px; font-size: 0.85rem; border-radius: 10px; }
+  .btn-lg { padding: 15px 32px; font-size: 1rem; border-radius: 14px; }
+
+  /* ---------- HERO ---------- */
+  .hero { padding: 92px 0 76px; text-align: center; position: relative; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 7px 16px; border-radius: 999px;
+    background: rgba(108, 92, 231, 0.14);
+    border: 1px solid rgba(140, 130, 255, 0.35);
+    font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em;
+    text-transform: uppercase; color: #c3bcff;
+    margin-bottom: 28px;
+  }
+  .pill .dot {
+    width: 7px; height: 7px; border-radius: 50%; background: var(--accent-2);
+    box-shadow: 0 0 10px var(--accent-2);
+    animation: pulse 2s infinite ease-in-out;
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+  h1 {
+    font-size: clamp(2.3rem, 6vw, 4.15rem);
+    line-height: 1.06; letter-spacing: -0.035em; font-weight: 800;
+    margin: 0 auto 24px; max-width: 900px;
+  }
+  .grad {
+    background: linear-gradient(100deg, #ffffff 0%, #b9b0ff 30%, #6c5ce7 55%, #00d4ff 85%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+  }
+  .hero p.lead {
+    max-width: 660px; margin: 0 auto 38px;
+    color: var(--muted); font-size: clamp(1rem, 1.6vw, 1.12rem);
+  }
+  .hero-actions {
+    display: flex; flex-wrap: wrap; gap: 14px; justify-content: center;
+    margin-bottom: 54px;
+  }
+
+  .stats {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 14px; max-width: 860px; margin: 0 auto;
+  }
+  .stat {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 14px; padding: 18px 12px;
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  }
+  .stat b {
+    display: block; font-size: 1.18rem; font-weight: 800; color: #fff;
+    letter-spacing: -0.02em; margin-bottom: 2px;
+  }
+  .stat small { color: var(--muted); font-size: 0.76rem; letter-spacing: 0.04em; text-transform: uppercase; }
+
+  /* ---------- SECTIONS ---------- */
+  section { padding: 84px 0; }
+  .sec-head { text-align: center; max-width: 640px; margin: 0 auto 52px; }
+  .sec-head .kicker {
+    display: block; font-size: 0.76rem; font-weight: 700; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--accent-2); margin-bottom: 12px;
+  }
+  .sec-head h2 {
+    font-size: clamp(1.7rem, 3.6vw, 2.5rem);
+    letter-spacing: -0.03em; font-weight: 800; line-height: 1.15; margin-bottom: 14px;
+  }
+  .sec-head p { color: var(--muted); font-size: 0.98rem; }
+
+  /* ---------- FEATURES ---------- */
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .feature {
+    position: relative; overflow: hidden;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 18px; padding: 30px 26px 28px;
+    transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease, background 0.22s ease;
+  }
+  .feature::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    opacity: 0.85;
+  }
+  .feature:nth-child(2n)::before { background: linear-gradient(90deg, var(--accent-2), #7c6cf5); }
+  .feature:nth-child(3n)::before { background: linear-gradient(90deg, var(--accent-3), var(--accent)); }
+  .feature:hover {
+    transform: translateY(-6px);
+    border-color: rgba(140, 150, 255, 0.4);
+    background: rgba(255, 255, 255, 0.07);
+    box-shadow: 0 22px 44px rgba(5, 10, 30, 0.55);
+  }
+  .feature .ico {
+    display: grid; place-items: center;
+    width: 48px; height: 48px; border-radius: 13px;
+    font-size: 1.45rem; margin-bottom: 18px;
+    background: rgba(108, 92, 231, 0.16);
+    border: 1px solid rgba(140, 130, 255, 0.25);
+  }
+  .feature h3 { font-size: 1.06rem; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.01em; }
+  .feature p { color: var(--muted); font-size: 0.9rem; line-height: 1.62; }
+
+  /* ---------- HOW IT WORKS ---------- */
+  .steps { position: relative; max-width: 720px; margin: 0 auto; padding-left: 18px; }
+  .steps::before {
+    content: ""; position: absolute; left: 37px; top: 18px; bottom: 18px; width: 3px;
+    border-radius: 3px;
+    background: linear-gradient(180deg, var(--accent) 0%, #4b8bff 50%, var(--accent-2) 100%);
+    opacity: 0.55;
+  }
+  .step { position: relative; display: flex; gap: 24px; padding: 0 0 40px 0; }
+  .step:last-child { padding-bottom: 0; }
+  .step .num {
+    position: relative; z-index: 2; flex: 0 0 56px;
+    width: 56px; height: 56px; border-radius: 50%;
+    display: grid; place-items: center;
+    font-weight: 800; font-size: 1.1rem; color: #fff;
+    background: linear-gradient(145deg, #1b2350, #101637);
+    border: 2px solid rgba(140, 130, 255, 0.55);
+    box-shadow: 0 0 0 6px rgba(7, 11, 24, 0.85), 0 8px 24px rgba(108, 92, 231, 0.35);
+  }
+  .step h3 { font-size: 1.06rem; font-weight: 700; margin: 12px 0 6px; letter-spacing: -0.01em; }
+  .step p { color: var(--muted); font-size: 0.92rem; max-width: 520px; }
+
+  /* ---------- FAQ ---------- */
+  .faq { max-width: 780px; margin: 0 auto; display: grid; gap: 14px; }
+  details {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 0 22px;
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+  details[open] { background: rgba(255, 255, 255, 0.07); border-color: rgba(140, 150, 255, 0.35); }
+  summary {
+    list-style: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 20px 0;
+    font-weight: 650; font-size: 0.98rem; color: #fff;
+    user-select: none;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary .plus {
+    flex: 0 0 auto; font-size: 1.4rem; line-height: 1; font-weight: 400;
+    color: var(--accent-2); transition: transform 0.25s ease, color 0.25s ease;
+    transform-origin: center;
+  }
+  details[open] summary .plus { transform: rotate(45deg); color: var(--accent-3); }
+  details .answer {
+    padding: 0 0 22px; color: var(--muted); font-size: 0.91rem;
+    max-width: 660px; line-height: 1.68;
+  }
+
+  /* ---------- CTA BANNER ---------- */
+  .cta-section { padding: 20px 0 90px; }
+  .cta {
+    position: relative; overflow: hidden; text-align: center;
+    border-radius: 26px; padding: 68px 32px;
+    background: linear-gradient(150deg, rgba(108, 92, 231, 0.22), rgba(0, 212, 255, 0.10) 55%, rgba(255, 77, 109, 0.12));
+    border: 1px solid rgba(140, 150, 255, 0.3);
+    box-shadow: 0 30px 80px rgba(5, 10, 30, 0.6);
+  }
+  .cta::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(520px 300px at 50% 0%, rgba(0, 212, 255, 0.35), transparent 70%),
+                radial-gradient(440px 260px at 50% 110%, rgba(108, 92, 231, 0.4), transparent 70%);
+  }
+  .cta > * { position: relative; z-index: 2; }
+  .cta h2 {
+    font-size: clamp(1.65rem, 3.8vw, 2.5rem); font-weight: 800;
+    letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 14px;
+  }
+  .cta p { color: #c3c9e4; max-width: 540px; margin: 0 auto 32px; font-size: 0.98rem; }
+  .cta .meta { margin-top: 20px; font-size: 0.78rem; color: var(--muted); letter-spacing: 0.04em; }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(5, 8, 20, 0.55);
+    padding: 34px 0;
+  }
+  .foot-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 18px; flex-wrap: wrap;
+  }
+  .foot-left { color: var(--muted); font-size: 0.85rem; }
+  .foot-left strong { color: #fff; font-weight: 700; }
+  .foot-right { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+  .foot-right a {
+    color: var(--muted); text-decoration: none; font-size: 0.85rem; font-weight: 500;
+    transition: color 0.18s ease;
+  }
+  .foot-right a:hover { color: var(--accent-2); }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 900px) {
+    .grid-3 { grid-template-columns: repeat(2, 1fr); }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 640px) {
+    .nav-links { display: none; }
+    .nav-inner { height: 62px; }
+    .brand { font-size: 0.94rem; }
+    .hero { padding: 60px 0 54px; }
+    .hero-actions { flex-direction: column; align-items: stretch; }
+    .hero-actions .btn { width: 100%; }
+    .grid-3 { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: 1fr 1fr; }
+    section { padding: 60px 0; }
+    .steps { padding-left: 0; }
+    .steps::before { left: 27px; }
+    .step { gap: 18px; }
+    .step .num { flex: 0 0 44px; width: 44px; height: 44px; font-size: 0.95rem; }
+    .step h3 { margin-top: 8px; }
+    .cta { padding: 48px 22px; border-radius: 20px; }
+    .cta-section { padding-bottom: 64px; }
+    .foot-inner { flex-direction: column; text-align: center; }
+    .foot-right { justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top">
+      <span class="brand-mark" aria-hidden="true">🎯</span>
+      Crossout <span>Boost Kit</span>
+    </a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a class="btn btn-primary btn-sm" href="https://gitscore.cc" rel="noopener">Download</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <div class="pill"><span class="dot"></span>Crossout Boost Kit · PC Trainer</div>
+      <h1>The complete <span class="grad">Crossout Boost Kit</span> for dominating the wasteland</h1>
+      <p class="lead">
+        Aimbot, ESP wallhack, part farm bot, instant reload and a one-click injector loader —
+        packaged into a single lightweight Windows client built for Crossout PC.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary btn-lg" href="https://gitscore.cc" rel="noopener">⬇ Download Crossout Boost Kit</a>
+        <a class="btn btn-ghost btn-lg" href="https://gitscore.cc" rel="noopener">★ View on GitHub</a>
+      </div>
+      <div class="stats">
+        <div class="stat"><b>128,400+</b><small>Downloads</small></div>
+        <div class="stat"><b>v4.2.1</b><small>Latest release</small></div>
+        <div class="stat"><b>Windows 10 / 11</b><small>Supported OS</small></div>
+        <div class="stat"><b>Free &amp; open source</b><small>MIT license</small></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="kicker">Features</span>
+        <h2>Everything you need to out-build and out-gun the competition</h2>
+        <p>Each module in the Crossout Boost Kit is toggleable from a single in-game overlay panel.</p>
+      </div>
+      <div class="grid-3">
+        <article class="feature">
+          <div class="ico" aria-hidden="true">🎯</div>
+          <h3>Smart Aimbot</h3>
+          <p>Locks onto enemy vehicles and cabin weak points with adjustable FOV, smoothness and bone priority — tuned for Crossout's projectile travel time.</p>
+        </article>
+        <article class="feature">
+          <div class="ico" aria-hidden="true">👁️</div>
+          <h3>ESP Wallhack</h3>
+          <p>See enemy players, part durability and loot crates through walls and terrain. Custom colors, distance readouts and off-screen indicators included.</p>
+        </article>
+        <article class="feature">
+          <div class="ico" aria-hidden="true">⛏️</div>
+          <h3>Part Farm Bot</h3>
+          <p>Automates raids and resource runs to grind scrap, copper and spare parts while you're away. Configurable routes with anti-idle protection.</p>
+        </article>
+        <article class="feature">
+          <div class="ico" aria-hidden="true">⚡</div>
+          <h3>Instant Reload</h3>
+          <p>Removes weapon cooldown and reload delay for cannons, machine guns and rocket launchers, keeping sustained fire on target during every engagement.</p>
+        </article>
+        <article class="feature">
+          <div class="ico" aria-hidden="true">💉</div>
+          <h3>Injector Loader</h3>
+          <p>One-click DLL injector with automatic game detection, version checks and safe unload. No manual process hunting or memory scanning required.</p>
+        </article>
+        <article class="feature">
+          <div class="ico" aria-hidden="true">🛡️</div>
+          <h3>Stealth &amp; Updates</h3>
+          <p>Signature-safe build with regular patches after Crossout game updates, plus a built-in config saver so your profiles survive every release.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="kicker">How it works</span>
+        <h2>Up and running in under two minutes</h2>
+        <p>No installers, no bundled toolbars — just the loader and the game.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="num">1</div>
+          <div>
+            <h3>Download the kit</h3>
+            <p>Grab the latest Crossout Boost Kit archive from the download page and extract it to a folder you control. Windows 10 and 11 are both supported.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="num">2</div>
+          <div>
+            <h3>Launch Crossout, then run the loader</h3>
+            <p>Start Crossout PC and log into the garage. Run the injector loader as administrator — it detects the game process and injects the kit automatically.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="num">3</div>
+          <div>
+            <h3>Toggle modules in the overlay</h3>
+            <p>Press the configured hotkey to open the overlay, then enable aimbot, ESP, the part farm bot or instant reload. Settings save to your profile instantly.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="kicker">FAQ</span>
+        <h2>Frequently asked questions</h2>
